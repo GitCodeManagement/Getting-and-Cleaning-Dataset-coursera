@@ -77,7 +77,10 @@ df_full[,"Activity_Description"] <- activity_labels[df_full[, "Activity_Descript
 #assign column names to combined dataset
 names(df_full) <- c("Subject","Activity","Activity_Description",column_names$V2)
 
+#find all the columns names that have mean and standard deviation in it
 mean_std_variables <- grep("mean|std",names(df_full))
+
+#use the indexes returned to grep to select only the columns that have mean and standard deviation
 df_full <- df_full[,c(1,2,3,mean_std_variables)]
 
 #cleanup unused varibles to free up memory
@@ -85,7 +88,7 @@ rm(activity_labels,mean_std_variables,column_names)
 
 
 #group by Subject, Activity and Activity Description and summarise the results and writing the result set to the new CSV file
-df_full %>% arrange(order(Subject,Activity)) %>% group_by(Subject,Activity,Activity_Description) %>% summarise_all(funs(mean),cols=names(df_full)[4:length(names(df_full))]) %>% ungroup() %>% select(1:length(names(df_full)),-Activity) %>% write.csv(file="tidy_data.csv")
+df_full %>% group_by(Subject,Activity,Activity_Description) %>% summarise_all(funs(mean),cols=names(df_full)[4:length(names(df_full))]) %>% ungroup() %>% select(1:length(names(df_full)),-Activity) %>% write.csv(file="tidy_data.csv")
 
 #cleanup unused variables to free up memory
 rm(df_full)
